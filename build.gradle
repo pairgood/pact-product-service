@@ -3,7 +3,6 @@ plugins {
     id 'io.spring.dependency-management' version '1.1.4'
     id 'java'
     id 'jacoco'
-    id 'au.com.dius.pact' version '4.6.4'
 }
 
 group = 'com.ecommerce'
@@ -28,35 +27,10 @@ dependencies {
     testImplementation 'com.h2database:h2'
     testImplementation 'org.mockito:mockito-core'
     testImplementation 'org.mockito:mockito-junit-jupiter'
-    
-    // Add Pact consumer dependencies
-    testImplementation 'au.com.dius.pact.consumer:junit5:4.6.4'
 }
 
 tasks.named('test') {
     useJUnitPlatform()
-    exclude '**/*PactTest.*'
-    finalizedBy jacocoTestReport
-}
-
-// Pact configuration for Pactflow
-pact {
-    broker {
-        pactBrokerUrl = System.getenv('PACT_BROKER_BASE_URL') ?: 'https://pairgood.pactflow.io'
-        pactBrokerToken = System.getenv('PACT_BROKER_TOKEN')
-    }
-    publish {
-        pactDirectory = 'build/pacts'
-        tags = ['latest', System.getenv('GIT_BRANCH') ?: 'main']
-        version = project.version
-    }
-}
-
-// New Gradle tasks for Pact consumer testing
-task pactTest(type: Test) {
-    useJUnitPlatform()
-    include '**/*PactTest.*'
-    outputs.dir("${project.buildDir}/pacts")
     finalizedBy jacocoTestReport
 }
 
