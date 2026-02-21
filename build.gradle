@@ -3,6 +3,7 @@ plugins {
     id 'io.spring.dependency-management' version '1.1.4'
     id 'java'
     id 'jacoco'
+    id 'au.com.dius.pact' version '4.6.5'
 }
 
 group = 'com.ecommerce'
@@ -27,6 +28,8 @@ dependencies {
     testImplementation 'com.h2database:h2'
     testImplementation 'org.mockito:mockito-core'
     testImplementation 'org.mockito:mockito-junit-jupiter'
+    testImplementation 'au.com.dius.pact.consumer:junit5:4.6.5'
+    testImplementation 'au.com.dius.pact.provider:junit5spring:4.6.5'
 }
 
 tasks.named('test') {
@@ -46,4 +49,23 @@ jacocoTestReport {
 
 jacoco {
     toolVersion = "0.8.11"
+}
+
+pact {
+    publish {
+        pactBrokerUrl = 'http://localhost:9292'
+        pactBrokerUsername = 'admin'
+        pactBrokerPassword = 'admin'
+        tags = ['main']
+        version = project.version ?: '1.0.0'
+    }
+    serviceProviders {
+        create(findProperty('spring.application.name') ?: project.name) {
+            fromPactBroker {
+                selectors = latestTags('main')
+                enablePending = false
+                providerTags = ['main']
+            }
+        }
+    }
 }
