@@ -2,6 +2,7 @@ package com.ecommerce.productservice.controller;
 
 import com.ecommerce.productservice.model.Product;
 import com.ecommerce.productservice.service.ProductService;
+import com.ecommerce.productservice.telemetry.TelemetryClient;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -22,6 +23,9 @@ public class ProductController {
     @Autowired
     private ProductService productService;
     
+    @Autowired
+    private TelemetryClient telemetryClient;
+    
     @PostMapping
     @Operation(summary = "Create a new product", description = "Creates a new product in the catalog with the provided details")
     @ApiResponses(value = {
@@ -30,8 +34,16 @@ public class ProductController {
         @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     public ResponseEntity<Product> createProduct(@RequestBody Product product) {
-        Product savedProduct = productService.createProduct(product);
-        return ResponseEntity.ok(savedProduct);
+        telemetryClient.startTrace("create_product", "POST", "/api/products", null);
+        
+        try {
+            Product savedProduct = productService.createProduct(product);
+            telemetryClient.finishTrace("create_product", 200, null);
+            return ResponseEntity.ok(savedProduct);
+        } catch (Exception e) {
+            telemetryClient.finishTrace("create_product", 500, e.getMessage());
+            throw e;
+        }
     }
     
     @GetMapping
@@ -84,8 +96,17 @@ public class ProductController {
     public ResponseEntity<Product> updateProduct(
         @Parameter(description = "Unique identifier of the product to update", required = true, example = "1")
         @PathVariable Long id, @RequestBody Product product) {
-        Product updatedProduct = productService.updateProduct(id, product);
-        return ResponseEntity.ok(updatedProduct);
+        telemetryClient.startTrace("update_product", "PUT", "/api/products/" + id, null);
+        
+        try {
+            Product updatedProduct = productService.updateProduct(id, product);
+            telemetryClient.finishTrace("update_product", 200, null);
+            return ResponseEntity.ok(updatedProduct);
+        } catch (Exception e) {
+            int statusCode = e.getMessage().contains("not found") ? 404 : 500;
+            telemetryClient.finishTrace("update_product", statusCode, e.getMessage());
+            throw e;
+        }
     }
     
     @PutMapping("/{id}/stock")
@@ -99,8 +120,17 @@ public class ProductController {
     public ResponseEntity<Product> updateStock(
         @Parameter(description = "Unique identifier of the product to update stock for", required = true, example = "1")
         @PathVariable Long id, @RequestBody StockUpdateRequest request) {
-        Product product = productService.updateStock(id, request.getQuantity());
-        return ResponseEntity.ok(product);
+        telemetryClient.startTrace("update_stock", "PUT", "/api/products/" + id + "/stock", null);
+        
+        try {
+            Product product = productService.updateStock(id, request.getQuantity());
+            telemetryClient.finishTrace("update_stock", 200, null);
+            return ResponseEntity.ok(product);
+        } catch (Exception e) {
+            int statusCode = e.getMessage().contains("not found") ? 404 : 500;
+            telemetryClient.finishTrace("update_stock", statusCode, e.getMessage());
+            throw e;
+        }
     }
     
     @DeleteMapping("/{id}")
@@ -113,8 +143,17 @@ public class ProductController {
     public ResponseEntity<Void> deleteProduct(
         @Parameter(description = "Unique identifier of the product to delete", required = true, example = "1")
         @PathVariable Long id) {
-        productService.deleteProduct(id);
-        return ResponseEntity.noContent().build();
+        telemetryClient.startTrace("delete_product", "DELETE", "/api/products/" + id, null);
+        
+        try {
+            productService.deleteProduct(id);
+            telemetryClient.finishTrace("delete_product", 204, null);
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            int statusCode = e.getMessage().contains("not found") ? 404 : 500;
+            telemetryClient.finishTrace("delete_product", statusCode, e.getMessage());
+            throw e;
+        }
     }
     
     public static class StockUpdateRequest {
