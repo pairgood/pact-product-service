@@ -34,7 +34,7 @@ public class TelemetryClient {
         eventData.put("serviceName", serviceName);
         eventData.put("operation", operation);
         eventData.put("eventType", "SPAN");
-        eventData.put("timestamp", LocalDateTime.now());
+        eventData.put("timestamp", LocalDateTime.now().toString());
         eventData.put("status", "SUCCESS");
         eventData.put("httpMethod", httpMethod);
         eventData.put("httpUrl", httpUrl);
@@ -64,7 +64,7 @@ public class TelemetryClient {
         eventData.put("serviceName", serviceName);
         eventData.put("operation", operation + "_complete");
         eventData.put("eventType", "SPAN");
-        eventData.put("timestamp", LocalDateTime.now());
+        eventData.put("timestamp", LocalDateTime.now().toString());
         eventData.put("durationMs", duration);
         eventData.put("status", httpStatusCode >= 400 ? "ERROR" : "SUCCESS");
         eventData.put("httpStatusCode", httpStatusCode);
@@ -90,7 +90,7 @@ public class TelemetryClient {
         eventData.put("serviceName", serviceName);
         eventData.put("operation", targetService + "_" + operation);
         eventData.put("eventType", "SPAN");
-        eventData.put("timestamp", LocalDateTime.now());
+        eventData.put("timestamp", LocalDateTime.now().toString());
         eventData.put("durationMs", duration);
         eventData.put("status", statusCode >= 400 ? "ERROR" : "SUCCESS");
         eventData.put("httpMethod", httpMethod);
@@ -112,7 +112,7 @@ public class TelemetryClient {
         eventData.put("serviceName", serviceName);
         eventData.put("operation", "log_" + level.toLowerCase());
         eventData.put("eventType", "LOG");
-        eventData.put("timestamp", LocalDateTime.now());
+        eventData.put("timestamp", LocalDateTime.now().toString());
         eventData.put("status", "SUCCESS");
         eventData.put("metadata", message);
         sendTelemetryEvent(eventData);

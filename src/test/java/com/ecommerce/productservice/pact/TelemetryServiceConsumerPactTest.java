@@ -53,7 +53,7 @@ class TelemetryServiceConsumerPactTest {
                             body.stringValue("serviceName", "product-service");
                             body.stringValue("operation", "get_product");
                             body.stringValue("eventType", "SPAN");
-                            body.minArrayLike("timestamp", 7, PactDslJsonRootValue.integerType(2024), 7);
+                            body.stringType("timestamp", "2024-01-15T10:30:45");
                             body.stringValue("status", "SUCCESS");
                             body.stringValue("httpMethod", "GET");
                             body.stringValue("httpUrl", "/api/products/1");
@@ -108,7 +108,7 @@ class TelemetryServiceConsumerPactTest {
                             body.stringValue("serviceName", "product-service");
                             body.stringValue("operation", "get_product_complete");
                             body.stringValue("eventType", "SPAN");
-                            body.minArrayLike("timestamp", 7, PactDslJsonRootValue.integerType(2024), 7);
+                            body.stringType("timestamp", "2024-01-15T10:30:45");
                             body.numberType("durationMs", 150);
                             body.stringValue("status", "SUCCESS");
                             body.numberType("httpStatusCode", 200);
@@ -162,7 +162,7 @@ class TelemetryServiceConsumerPactTest {
                             body.stringValue("serviceName", "product-service");
                             body.stringValue("operation", "external-service_call_api");
                             body.stringValue("eventType", "SPAN");
-                            body.minArrayLike("timestamp", 7, PactDslJsonRootValue.integerType(2024), 7);
+                            body.stringType("timestamp", "2024-01-15T10:30:45");
                             body.numberType("durationMs", 320);
                             body.stringValue("status", "SUCCESS");
                             body.stringValue("httpMethod", "GET");
@@ -223,7 +223,7 @@ class TelemetryServiceConsumerPactTest {
                             body.stringValue("serviceName", "product-service");
                             body.stringValue("operation", "get_product");
                             body.stringValue("eventType", "SPAN");
-                            body.minArrayLike("timestamp", 7, PactDslJsonRootValue.integerType(2024), 7);
+                            body.stringType("timestamp", "2024-01-15T10:30:45");
                             body.stringValue("status", "SUCCESS");
                             body.stringValue("httpMethod", "GET");
                             body.stringValue("httpUrl", "/api/products");
@@ -276,7 +276,7 @@ class TelemetryServiceConsumerPactTest {
                             body.stringValue("serviceName", "product-service");
                             body.stringValue("operation", "get_product_complete");
                             body.stringValue("eventType", "SPAN");
-                            body.minArrayLike("timestamp", 7, PactDslJsonRootValue.integerType(2024), 7);
+                            body.stringType("timestamp", "2024-01-15T10:30:45");
                             body.numberType("durationMs", 250);
                             body.stringValue("status", "ERROR");
                             body.numberType("httpStatusCode", 404);
