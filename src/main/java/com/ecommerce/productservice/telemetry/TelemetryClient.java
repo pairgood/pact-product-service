@@ -1,8 +1,10 @@
 package com.ecommerce.productservice.telemetry;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClient.Builder;
 
 import java.time.LocalDateTime;
 import java.util.Map;
@@ -11,17 +13,18 @@ import java.util.concurrent.ThreadLocalRandom;
 
 @Component
 public class TelemetryClient {
-    
+
     private final WebClient webClient;
-    
+
     @Value("${telemetry.service.url:http://localhost:8086}")
     private String telemetryServiceUrl;
-    
+
     @Value("${spring.application.name}")
     private String serviceName;
-    
-    public TelemetryClient() {
-        this.webClient = WebClient.builder().build();
+
+    @Autowired
+    public TelemetryClient(Builder builder) {
+        this.webClient = builder.build();
     }
     
     public String startTrace(String operation, String httpMethod, String httpUrl, String userId) {
