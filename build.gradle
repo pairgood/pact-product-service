@@ -27,6 +27,20 @@ dependencies {
     testImplementation 'com.h2database:h2'
     testImplementation 'org.mockito:mockito-core'
     testImplementation 'org.mockito:mockito-junit-jupiter'
+
+    // OpenTelemetry tracing — add inside existing dependencies block
+
+    // Micrometer Tracing bridge for OpenTelemetry (BOM-managed in Spring Boot 3.x)
+    implementation 'io.micrometer:micrometer-tracing-bridge-otel'
+
+    // OpenTelemetry exporter — OTLP gRPC to Jaeger
+    implementation 'io.opentelemetry:opentelemetry-exporter-otlp'
+
+    // Required for OTLP gRPC transport
+    implementation 'io.grpc:grpc-netty-shaded:1.63.0'
+
+    // Actuator exposes tracing metrics endpoints
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
 }
 
 tasks.named('test') {
