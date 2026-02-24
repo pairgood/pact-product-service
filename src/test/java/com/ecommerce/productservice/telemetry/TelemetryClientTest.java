@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -16,7 +17,7 @@ public class TelemetryClientTest {
 
     @BeforeEach
     void setUp() {
-        telemetryClient = new TelemetryClient();
+        telemetryClient = new TelemetryClient(WebClient.builder());
         ReflectionTestUtils.setField(telemetryClient, "telemetryServiceUrl", "http://localhost:8086");
         ReflectionTestUtils.setField(telemetryClient, "serviceName", "product-service");
     }
@@ -24,7 +25,7 @@ public class TelemetryClientTest {
     @Test
     void constructor_ShouldCreateTelemetryClient() {
         // When
-        TelemetryClient client = new TelemetryClient();
+        TelemetryClient client = new TelemetryClient(WebClient.builder());
 
         // Then
         assertThat(client).isNotNull();
@@ -239,7 +240,7 @@ public class TelemetryClientTest {
     @Test
     void telemetryClient_ShouldHandleNetworkExceptionsGracefully() {
         // Given - TelemetryClient with invalid URL
-        TelemetryClient clientWithBadUrl = new TelemetryClient();
+        TelemetryClient clientWithBadUrl = new TelemetryClient(WebClient.builder());
         ReflectionTestUtils.setField(clientWithBadUrl, "telemetryServiceUrl", "http://invalid-url:9999");
         ReflectionTestUtils.setField(clientWithBadUrl, "serviceName", "product-service");
 

@@ -1,0 +1,24 @@
+name: Observability Build Check
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+      - name: Build and test
+        run: ./gradlew build
+      - name: Verify tracing configuration is present
+        run: |
+          # Fail the build if OTLP endpoint configuration is missing from application.yml
+          grep -r "otlp" src/main/resources/ || (echo "ERROR: OTel OTLP configuration missing" && exit 1)
+          grep -r "traceId" src/main/resources/ || (echo "ERROR: traceId log pattern missing" && exit 1)

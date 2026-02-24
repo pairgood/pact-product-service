@@ -1,5 +1,6 @@
 package com.ecommerce.productservice.telemetry;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -20,8 +21,9 @@ public class TelemetryClient {
     @Value("${spring.application.name}")
     private String serviceName;
     
-    public TelemetryClient() {
-        this.webClient = WebClient.builder().build();
+    @Autowired
+    public TelemetryClient(WebClient.Builder builder) {
+        this.webClient = builder.build();
     }
     
     public String startTrace(String operation, String httpMethod, String httpUrl, String userId) {
